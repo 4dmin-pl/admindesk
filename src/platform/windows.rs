@@ -2106,7 +2106,9 @@ pub fn get_license_from_exe_name() -> ResultType<CustomServer> {
     if let Ok(portable_exe) = std::env::var(PORTABLE_APPNAME_RUNTIME_ENV_KEY) {
         exe = portable_exe;
     }
-    get_custom_server_from_string(&exe)
+    // AdminDesk: serwer/klucz tylko z kodu (src/admindesk.rs), nigdy z nazwy pliku exe.
+    let _ = exe;
+    Err(anyhow!("exe-name config disabled"))
 }
 
 // We can't directly use `RegKey::set_value` to update the registry value, because it will fail with `ERROR_ACCESS_DENIED`

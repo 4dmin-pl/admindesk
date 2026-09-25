@@ -2340,7 +2340,7 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
 }
 
 pub fn load_custom_client() {
-    *config::APP_NAME.write().unwrap() = "AdminDesk".to_owned();
+    crate::admindesk::apply();
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());

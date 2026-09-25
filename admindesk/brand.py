@@ -41,10 +41,23 @@ def zapisz_ico(im, path, sizes):
     im.save(path, format="ICO", sizes=[(s, s) for s in sizes])
 
 
+PODPIS = "by Karol Wojewski"
+PODPIS_FONT = "C:/Windows/Fonts/seguili.ttf"  # Segoe UI Light Italic; render do PNG, pliku fontu nie dystrybuujemy
+
+
 def logo(rgb, height=120):
-    im = recolor(render("logo.svg", 4000), rgb)
-    im.thumbnail((height * 10, height), Image.LANCZOS)
-    return im
+    """Napis ADMIN + podpis pod nim, wyrównany do prawej (zatwierdzony wariant A z czcionką C)."""
+    from PIL import ImageDraw, ImageFont
+
+    znak = recolor(render("logo.svg", 4000), rgb)
+    znak.thumbnail((height * 10, height), Image.LANCZOS)
+    font = ImageFont.truetype(PODPIS_FONT, round(height * 0.233))
+    left, top, right, bottom = font.getbbox(PODPIS)
+    gap = round(height * 0.07)
+    im = Image.new("RGBA", (znak.width, znak.height + gap + bottom), (0, 0, 0, 0))
+    im.alpha_composite(znak, (0, 0))
+    ImageDraw.Draw(im).text((znak.width - right, znak.height + gap), PODPIS, font=font, fill=rgb + (230,))
+    return im.crop(im.getbbox())
 
 
 def main():

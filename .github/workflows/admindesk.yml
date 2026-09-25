@@ -1,4 +1,4 @@
-# AdminDesk (A.D.M.I.N) — build Windows x64: instalator EXE + MSI.
+# AdminDesk (A.D.M.I.N) — build Windows x64: Agent (u klienta, EXE+MSI) i Konsola (technik, EXE).
 # Odchudzona kopia joba build-for-windows-flutter z flutter-build.yml (bez arm64, podpisu, szablonu MSI).
 # Przy aktualizacji z upstream porównaj kroki i wersje w env z flutter-build.yml.
 name: AdminDesk Windows
@@ -14,7 +14,6 @@ env:
   LLVM_VERSION: "15.0.6"
   FLUTTER_VERSION: "3.24.5"
   VCPKG_COMMIT_ID: "9e593bb18ea69cc5095e012465dcd675a822ed0d"
-  APP_NAME: "AdminDesk"
   MANUFACTURER: "A.D.M.I.N"
 
 jobs:
@@ -33,6 +32,15 @@ jobs:
   windows:
     needs: [generate-bridge, build-topmost]
     runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { role: agent, app: AdminDesk, msi: true }
+          - { role: konsola, app: AdminDesk-Konsola, msi: false }
+    env:
+      ADMINDESK_ROLE: ${{ matrix.role }}  # czytane w src/admindesk.rs przez option_env!
+      APP_NAME: ${{ matrix.app }}
     permissions:
       contents: write
     steps:
@@ -85,7 +93,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
-          prefix-key: admindesk-windows-2022
+          prefix-key: admindesk-${{ matrix.role }}
 
       - uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2 # v11
         with:
@@ -137,8 +145,10 @@ jobs:
           mv ./target/release/rustdesk-portable-packer.exe ./out/${APP_NAME}-${VERSION}-x64.exe
 
       - uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+        if: matrix.msi
 
       - name: Build msi
+        if: matrix.msi
         run: |
           pushd ./res/msi
           python preprocess.py --arp -d ../../rustdesk --app-name "${{ env.APP_NAME }}" -m "${{ env.MANUFACTURER }}"
@@ -150,7 +160,7 @@ jobs:
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: AdminDesk-windows-x64
+          name: ${{ matrix.app }}-windows-x64
           path: ./out
 
       - name: Publish release (tag admindesk-*)

@@ -3808,7 +3808,7 @@ class _LogoState extends State<_Logo> {
             },
           );
           return Container(
-            constraints: BoxConstraints(maxWidth: 300, maxHeight: 60),
+            constraints: BoxConstraints(maxWidth: 300, maxHeight: 80),
             child: image,
           ).marginOnly(left: 12, right: 12, top: 12);
         }
@@ -3818,7 +3818,7 @@ class _LogoState extends State<_Logo> {
   }
 }
 
-// max 300 x 60
+// max 300 x 80 (AdminDesk: logo z podpisem)
 Widget loadLogo() => const _Logo();
 
 Widget loadIcon(double size) {
