@@ -143,6 +143,8 @@ jobs:
           popd
           mkdir -p ./out
           mv ./target/release/rustdesk-portable-packer.exe ./out/${APP_NAME}-${VERSION}-x64.exe
+          # stała nazwa pod link na stronie: .../releases/latest/download/<App>-x64.exe
+          cp ./out/${APP_NAME}-${VERSION}-x64.exe ./out/${APP_NAME}-x64.exe
 
       - uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
         if: matrix.msi
@@ -157,6 +159,7 @@ jobs:
           $msi = Get-ChildItem ./Package/bin/*/Release/en-us/Package.msi | Select-Object -First 1
           popd
           mv $msi.FullName ./out/${{ env.APP_NAME }}-${{ env.VERSION }}-x64.msi
+          Copy-Item ./out/${{ env.APP_NAME }}-${{ env.VERSION }}-x64.msi ./out/${{ env.APP_NAME }}-x64.msi
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
