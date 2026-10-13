@@ -49,6 +49,8 @@ pub fn apply() {
         for k in [keys::OPTION_ENABLE_TUNNEL, keys::OPTION_ENABLE_TERMINAL, keys::OPTION_ENABLE_CAMERA] {
             overwrite.insert(k.to_owned(), "N".to_owned());
         }
+        // stare „stop-service = Y” w pliku config wyłączało rejestrację na serwerze bez śladu w UI (test 13.10.2026)
+        overwrite.insert("stop-service".to_owned(), "N".to_owned());
     }
     if !RENDEZVOUS_SERVER.is_empty() {
         overwrite.insert(keys::OPTION_CUSTOM_RENDEZVOUS_SERVER.to_owned(), RENDEZVOUS_SERVER.to_owned());
