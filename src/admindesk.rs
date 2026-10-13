@@ -5,8 +5,8 @@ use base::config::keys;
 use hbb_common::config;
 
 // Etap 2: nasz hbbs i jego klucz PUBLICZNY (id_ed25519.pub). Puste = jeszcze brak serwera.
-const RENDEZVOUS_SERVER: &str = "";
-const SERVER_KEY: &str = "";
+const RENDEZVOUS_SERVER: &str = "10.10.10.11";
+const SERVER_KEY: &str = "9k1au4w4kJBW9n9HMmz1hzqQQVWEc7oRPOT0q+mA2FQ=";
 
 pub fn is_konsola() -> bool {
     option_env!("ADMINDESK_ROLE") == Some("konsola")
